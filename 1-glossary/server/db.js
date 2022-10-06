@@ -3,7 +3,10 @@ mongoose.connect('mongodb://127.0.0.1/glossaryApp')
 .catch((error => console.log('error connecting to database')))
 
 const glossarySchema = new mongoose.Schema({
-  word: String,
+  word: {
+    unique: true,
+    type: String
+  },
   defintion: String
 })
 
@@ -17,8 +20,13 @@ const getWords = (cb) => {
     cb(null, results)})
 }
 
+const addWord = (input) => {
+  Glossary.create(input)
+}
+
 module.exports = {
-  getWords
+  getWords,
+  addWord
 }
 
 

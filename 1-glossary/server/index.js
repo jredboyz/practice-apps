@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const {getWords} = require("./db.js")
+const {getWords, addWord} = require("./db.js")
 const app = express();
 
 // Serves up all static and generated assets in ../client/dist.
@@ -16,10 +16,10 @@ app.get('/glossary', (req, res) => {
     res.send(result);
   })
 })
-
+let test = {word: 'car', defintion: 'my whip'}
 app.post('/glossary', (req, res) => {
-  // addWord()
-  res.status(201).send('POST')
+  addWord(test);
+  res.status(201).send();
 })
 
 
