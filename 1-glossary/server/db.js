@@ -7,13 +7,13 @@ const glossarySchema = new mongoose.Schema({
     unique: true,
     type: String
   },
-  defintion: String
+  definition: String
 })
 
 const Glossary = mongoose.model('Glossary', glossarySchema)
 
 const getWords = (cb) => {
-  Glossary.find({}).exec((err, results) => {
+  Glossary.find({}).sort({word: 1}).exec((err, results) => {
     if (err) {
       console.log(err, 'ERROR in getWords')
     }
@@ -22,11 +22,24 @@ const getWords = (cb) => {
 
 const addWord = (input) => {
   Glossary.create(input)
+  .catch((err) => console.log(err, 'UNIQUE VALUE'))
+}
+
+const deleteWord = (input) => {
+  Glossary.deleteOne(input)
+  .catch((err) => console.log(err, 'DID NOT DELETE'))
+}
+
+const updateWord = (filterObj, updateObj) => {
+  Glossary.update(filterObj, {$set: updateObj})
+  .catch((err) => console.log(err, 'DID NOT UPDATE'))
 }
 
 module.exports = {
   getWords,
-  addWord
+  addWord,
+  deleteWord,
+  updateWord
 }
 
 

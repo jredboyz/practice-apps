@@ -1,12 +1,15 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
-const {getWords, addWord} = require("./db.js")
+const {getWords, addWord, deleteWord, updateWord} = require("./db.js")
+const cors = require("cors")
 const app = express();
 
 // Serves up all static and generated assets in ../client/dist.
 app.use(express.static(path.join(__dirname, "../client/dist")));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
+app.use(cors());
 
 app.get('/glossary', (req, res) => {
   getWords((err, result) => {
@@ -16,10 +19,21 @@ app.get('/glossary', (req, res) => {
     res.send(result);
   })
 })
-let test = {word: 'car', defintion: 'my whip'}
+
 app.post('/glossary', (req, res) => {
-  addWord(test);
+  addWord(req.body);
   res.status(201).send();
+})
+
+app.delete('/glossary', (req, res) => {
+  deleteWord(req.body)
+  res.status(201).send();
+})
+
+app.put('/glossary', (req, res) => {
+  console.log(req.body, 'REQ OBJ')
+  updateWord(req.body.filter, req.body.update)
+  res.status(201).send()
 })
 
 
