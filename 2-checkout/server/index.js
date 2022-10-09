@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const sessionHandler = require("./middleware/session-handler");
 const logger = require("./middleware/logger");
+const cors = require("cors")
 
 // Establishes connection to the database on server start
 const db = require("./db");
@@ -20,6 +21,7 @@ app.use(logger);
 // Serves up all static and generated assets in ../client/dist.
 app.use(express.static(path.join(__dirname, "../client/dist")));
 app.use(express.json())
+app.use(cors())
 
 
 app.get('/checkout', (req, res) => {
@@ -28,15 +30,10 @@ app.get('/checkout', (req, res) => {
     res.status(200).send(result);
   })
   .catch((err) => console.log(err))
-  // (err, results) => {
-    // if (err) {console.log(err, 'ERROR - get request')}
-    // res.status(200).send(results)
-  // })
 })
 
 app.post('/checkout', (req, res) => {
-  const { name, email, password, address, city, state, zipCode, phoneNumber, creditCard, ExpDate, cvv, billingZip } = req.body;
-  console.log(name, "NAMEEEEEE")
+  const { name, email, password, address, city, state, zipCode, phoneNumber, creditCard, ExpDate, cvv, billingZip } = req.body.data;
   const values = [name, email, password, address, city, state, zipCode, phoneNumber, creditCard, ExpDate, cvv, billingZip]
   //bookmark for the TA
   db.query(`INSERT INTO responses (name, email, password, address, city, state, zipCode, phoneNumber, creditCard, ExpDate, cvv, billingZip)
@@ -45,10 +42,11 @@ app.post('/checkout', (req, res) => {
       console.log('ERROR - post request', err )
       res.send(404)
     } else {
-      res.status(201).send('Added to database')
+      res.status(201).send('posted')
     }
   })
 })
+
 
 app.listen(process.env.PORT);
 console.log(`Listening at http://localhost:${process.env.PORT}`);
